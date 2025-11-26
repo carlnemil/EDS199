@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDS 199 E-Portfolio: The Discovery Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- IMPORTING 'Fredoka' for the main title (Super playful/rounded) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Inter:wght@400;700;900&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Colors & Base Styles (Growth and Nature Palette - Enhanced) --- */
+        :root {
+            --color-header-dark-green: #0a4f33; /* Darker Forest Green for Header/Footer */
+            --color-primary-green: #10b981;    /* Emerald Green - Core professional color */
+            --color-light-green: #d1fae5;      /* Mint Green - Background accents */
+            --color-accent-yellow: #facc15;    /* Sunny Yellow - Playfulness/Highlights */
+            --color-text-dark: #1f2937;        /* Dark Gray */
+            --color-text-light: #ffffff;       /* White text for dark backgrounds */
+            --color-bg-paper: #fcfcf5;         /* Subtle Cream/Linen for main background */
+            --color-nav-drawer-bg: #f0fff4;    /* Light, warm green for navigation */
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--color-bg-paper); 
+            color: var(--color-text-dark);
+        }
+        /* Merriweather for section headings */
+        h1, h2, h3 { 
+            font-family: 'Merriweather', serif; 
+            font-weight: 900; 
+        }
+
+        /* --- NEW: IMPACTFUL CREATIVE TITLE STYLE --- */
+        .playful-title {
+            /* Using the new rounded font */
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            
+            /* Big, impactful gradient text */
+            background: linear-gradient(135deg, #059669 0%, #0ea5e9 50%, #eab308 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent; /* Fallback */
+
+            /* Drop shadow to make it pop against the background */
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1));
+            
+            line-height: 1.1;
+            padding-bottom: 10px; /* Space for descenders */
+        }
+        
+        .playful-subtitle {
+             font-family: 'Fredoka', sans-serif;
+             font-weight: 600;
+             color: #4b5563;
+             letter-spacing: 0.05em;
+        }
+
+        .rounded-leaf { border-radius: 1.5rem 0.5rem 1.5rem 0.5rem; } 
+        .shadow-organic { box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15), 0 3px 6px rgba(16, 185, 129, 0.08); }
+        
+        /* --- Content Transitions (Zoom/Bounce) --- */
+        .content-section { 
+            min-height: 70vh; 
+            display: none; 
+            padding-top: 2rem; 
+            padding-bottom: 2rem; 
+            opacity: 0;
+            transform: scale(0.99);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .content-active {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* --- Navigation Drawer Specific Styles --- */
+        #nav-drawer {
+            transition: transform 0.3s ease-out;
+            transform: translateX(-100%); 
+            background-color: var(--color-nav-drawer-bg); 
+        }
+        #nav-drawer.is-open {
+            transform: translateX(0); 
+        }
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        .nav-link { 
+            display: block;
+            padding: 1rem 1.5rem; 
+            margin: 0.5rem 0;
+            transition: all 0.2s ease-in-out; 
+            font-weight: 700;
+            border-radius: 0.5rem;
+            color: var(--color-text-dark);
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-link.active {
+            background-color: var(--color-primary-green);
+            color: var(--color-text-light); 
+        }
+        .nav-link:hover:not(.active) {
+            background-color: var(--color-light-green); 
+        }
+
+        /* --- Typography & Structure --- */
+        h1 { font-size: 3rem; line-height: 1.1; }
+        h2 { font-size: 2.2rem; color: var(--color-primary-green); }
+        p { line-height: 1.7; }
+        
+        /* --- Custom Card for data/blocks --- */
+        .data-card {
+            background-color: white; 
+            padding: 1.5rem;
+            border: 2px solid var(--color-light-green);
+            border-bottom: 6px solid var(--color-accent-yellow); 
+            border-radius: 1rem;
+        }
+
+        /* Table Styles (Retained) */
+        table { width: 100%; border-radius: 1rem; overflow: hidden; margin-top: 1.5rem; margin-bottom: 2.5rem; border: none; }
+        th, td { padding: 1rem 1.25rem; text-align: left; }
+        th { 
+            background-color: var(--color-primary-green); 
+            color: white; 
+            font-weight: 800; 
+            font-family: 'Inter', sans-serif;
+        }
+        tr:nth-child(even) { background-color: #f0fff4; } 
+        tr:nth-child(odd) { background-color: #ffffff; }
+        td { border-bottom: 1px solid #e5e7eb; }
+
+        /* Custom styling for the narrative/reflection tables */
+        .reflection-table th, .reflection-table td {
+            padding: 1rem;
+            vertical-align: top;
+            border: 1px solid #e0f2f1; /* Light cyan border */
+        }
+        .reflection-table th {
+            background-color: #e0f2f1; /* Even lighter green background */
+            color: #065f46;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header (Dark Green) -->
+    <header class="sticky top-0 z-50 bg-[var(--color-header-dark-green)] p-4 shadow-xl"> 
+
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h2 class="text-xl font-black text-white">EDS 199 E-Portfolio</h2>
+            
+            <!-- Hamburger Button with White Background -->
+            <button id="menu-button" class="bg-white p-2 rounded-lg transition shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[var(--color-header-dark-green)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Drawer (Light Honeydew Green) -->
+    <div id="nav-drawer" class="fixed top-0 left-0 h-full w-64 shadow-2xl z-40 p-6 overflow-y-auto">
+        <h3 class="text-2xl font-black text-primary-green mb-6 border-b pb-2">Sections</h3>
+        <nav class="space-y-1">
+            <a id="link-home" href="#home" class="nav-link">🏠 Home</a>
+            <a id="link-background" href="#background" class="nav-link">🏗️ Background</a>
+            <a id="link-introduction" href="#introduction" class="nav-link">📐 Introduction to Special Project</a>
+            <a id="link-narrative" href="#narrative" class="nav-link">🚀 Main Narrative & Synthesis</a>
+            <a id="link-conclusions" href="#conclusions" class="nav-link">🏆 Conclusions & Recommendations</a>
+            <a id="link-references" href="#references" class="nav-link">📖 References</a>
+            <a id="link-annexes" href="#annexes" class="nav-link">📎 Appendices/Annexes</a>
+            <a id="link-journal" href="#journal" class="nav-link">✍️ Journal Logs</a>
+        </nav>
+    </div>
+
+    <!-- Backdrop for closing menu on click outside -->
+    <div id="menu-backdrop" class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-opacity duration-300 z-30"></div>
+
+    <!-- Main Content Area -->
+    <main class="max-w-4xl mx-auto px-4 py-16">
+
+        <!-- 1. Home Section (Content Unchanged) -->
+        <div id="home" class="content-section">
+            <header class="text-center pb-12 border-b-4 border-dashed border-primary-green">
+                <p class="text-xl font-semibold text-gray-500 mb-2 font-inter">UPOU EDS 199 E-Portfolio</p>
+                
+                <!-- IMPACTFUL TITLE -->
+                <h1 class="playful-title text-6xl md:text-8xl leading-tight">
+                    Little Numbers,<br>Big Discoveries
+                </h1>
+                
+                <p class="playful-subtitle text-2xl md:text-3xl mt-4">
+                    Enhancing Early Numeracy Through <span class="text-primary-green">Play-Based Learning</span>
+                </p>
+                
+                <p class="mt-8 text-sm font-medium text-gray-600 font-inter">By: <span class="font-bold text-gray-800">Carl Benedict DR. Nemil</span> | Date: 2025-2026</p>
+            </header>
+
+            <!-- Self-Introduction Card -->
+            <div class="data-card shadow-organic mt-12 bg-white mb-8">
+                <h3 class="text-2xl font-black text-gray-800 mb-4 border-b-2 border-accent-yellow pb-2 flex items-center">
+                    <span class="text-3xl mr-2 text-primary-green">👋</span> Self-Introduction
+                </h3>
+                <p class="text-gray-700">Hello everyone! I’m Carl Benedict DR. Nemil, 24, a Bachelor of Education Studies student at the University of the Philippines Open University from Bocaue, Bulacan. I’m currently completing my Special Project with a local educational center, driven by a deep passion for play-based learning. I believe learning should never feel like a chore—it should inspire wonder, spark growth, and create experiences children carry with them for life.</p>
+            </div>
+
+            <!-- Overview Card -->
+            <div class="data-card shadow-organic bg-white mb-8">
+                <h3 class="text-2xl font-black text-gray-800 mb-4 border-b-2 border-accent-yellow pb-2 flex items-center">
+                    <span class="text-3xl mr-2 text-primary-green">🌟</span> ePortfolio Overview: Purpose and Focus
+                </h3>
+                <p class="text-gray-700">The primary purpose of this ePortfolio is to present and synthesize the special project titled <b> "Little Numbers, Big Discoveries: Enhancing Early Numeracy Through Play-Based Learning."</b> It serves as a comprehensive demonstration of my mastery of theoretical concepts and my ability to apply them in a real-world educational intervention, focusing specifically on foundational numeracy skills.</p>
+            </div>
+
+            <!-- Philosophy Card -->
+            <div class="data-card shadow-organic bg-white mb-8">
+                <h3 class="text-2xl font-black text-gray-800 mb-4 border-b-2 border-accent-yellow pb-2 flex items-center">
+                    <span class="text-3xl mr-2 text-primary-green">🧠</span> Educational Philosophy: Constructivism & Play
+                </h3>
+                <p class="text-gray-700">My philosophy is rooted in Constructivism. I believe that learning is an active process where students build knowledge based on experience. Play is not merely downtime but the critical vehicle for this construction, especially in early childhood. My practice is centered on facilitation—creating rich environments where children can ask questions, experiment, and discover knowledge for themselves.</p>
+            </div>
+
+            <!-- Dedication Card -->
+            <div class="data-card shadow-organic bg-white mb-8">
+                <h3 class="text-2xl font-black text-gray-800 mb-4 border-b-2 border-accent-yellow pb-2 flex items-center">
+                    <span class="text-3xl mr-2 text-primary-green">🙏</span> Acknowledgments
+                </h3>
+                <p class="text-gray-700">I would like to express my sincere gratitude to <b> Mr. Jomer Paguio, Ms. Flordeliza Paguio,</b> and the <b> Little Discoverers Education Hub Center, Guiguinto Branch,</b> for granting me the opportunity to conduct my project at their center. A special thanks to Ms. Flordeliza for serving as my project gatekeeper. I am also grateful to the playgroup learners— <b> the Little Discoverers </b> at the center—whose participation made this project possible. Finally, I extend my heartfelt appreciation to  <b> Mr. Leynard Gripal</b>, Faculty-In-Charge, for his guidance and support throughout the project.</p>
+            </div>
+
+            <!-- Table of Contents Card -->
+            <div class="data-card shadow-organic bg-white">
+                <h3 class="text-2xl font-black text-gray-800 mb-4 border-b-2 border-accent-yellow pb-2 flex items-center">
+                    <span class="text-3xl mr-2">🔗</span> Table of Contents
+                </h3>
+                <p class="text-gray-700 italic mb-3">Use the navigation menu (top-right burger icon) or the links below to jump to a specific section.</p>
+                <ul class="list-disc ml-6 space-y-2 text-gray-700">
+                    <li><a href="#background" class="text-primary-green hover:underline font-medium">2. Background: Building the Foundation</a></li>
+                    <li><a href="#introduction" class="text-primary-green hover:underline font-medium">3. Introduction to the Special Project: Designing the Challenge</a></li>
+                    <li><a href="#narrative" class="text-primary-green hover:underline font-medium">4. Main Narrative & Synthesis: Observing the Game in Action</a></li>
+                    <li><a href="#conclusions" class="text-primary-green hover:underline font-medium">5. Conclusions & Recommendations: Winning Insights & Next Levels</a></li>
+                    <li><a href="#references" class="text-primary-green hover:underline font-medium">6. References: Supporting Resources</a></li>
+                    <li><a href="#annexes" class="text-primary-green hover:underline font-medium">7. Appendices/Annexes: Our Documentation</a></li>
+                    <li><a href="#journal" class="text-primary-green hover:underline font-medium">8. Journal Logs: Day-to-Day Reflections</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 2. Background Section (Content Unchanged) -->
+        <div id="background" class="content-section">
+            <div class="p-8 bg-white rounded-leaf shadow-organic">
+                <h1 class="text-4xl text-primary-green mb-6 border-b-4 border-accent-yellow pb-2">2. Background: Setting the Stage for Discovery</h1>
+
+                <!-- 2.1 Context and Needs Analysis -->
+                <div class="mb-10 p-6 bg-light-green rounded-leaf border-l-4 border-primary-green">
+                    <h2 class="text-2xl text-green-800 mb-3 font-extrabold flex items-center">
+                        <span class="text-3xl mr-2">🎯</span> 2.1 Context and Needs Analysis
+                    </h2>
+                    <p class="text-gray-700 mb-3">This project was developed in response to the identified need to strengthen the early numeracy skills of playgroup learners aged 3.5–4.5 at Little Discoverers Education Hub (Guiguinto Branch). During the initial consultation with the center’s representative, it was noted that while many children can already <b>recognize number symbols</b>, they often struggle to <b>connect numerals to actual quantities</b>, compare amounts, or perform simple addition and subtraction meaningfully.<br>
+					<br>The school expressed a desire to explore <b>new, playful approaches</b> that could improve learner engagement and numeracy outcomes. Their curriculum is flexible and open to integrating creative strategies, making it an ideal setting for a short instructional design intervention.</p>
+                    
+                    <div class="mt-4 p-3 bg-white rounded-lg border">
+                        <p class="font-bold text-sm text-gray-700">Key Observation Highlights (Pre-Project):</p>
+                        <ul class="list-disc ml-6 text-sm text-gray-600">
+                            <li>Teachers shared that children know how to recognize numbers but do not fully understand the details, particularly in counting, matching quantities, and early operations.</li>
+                            <li>The institution expressed willingness to “try another approach” to enhance numeracy and compare it with their current methods.</li>
+			    <br>
+			    <em>(More detailed classroom observations will be added after the January 2026 site visit — In Progress)</em>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 2.2 The Special Project Site -->
+                <div class="mb-10">
+                    <h2 class="text-2xl text-primary-green mb-4 font-extrabold flex items-center border-b pb-2">
+                        <span class="text-3xl mr-2">📍</span> 2.2 The Special Project Site
+                    </h2>
+
+                    <!-- 2.2.1 Description of the Institution -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">2.2.1 Description of the Institution</h3>
+                    <p class="text-gray-700">
+                        Little Discoverers Education Hub (Guiguinto Branch) is a private early childhood center offering programs for children aged 3–5. The school emphasizes <b>holistic, child-centered learning</b> grounded in exploration and play. Their curriculum encourages independent discovery, creativity, and hands-on activities — making it highly compatible with a play-based numeracy intervention.
+						<br>
+						<br>
+						The institution was selected because of its strong support for innovation and its flexible schedule that allows pilot-learning sessions. The staff openly welcomed the project and confirmed that numeracy will continue in January 2026 with <b>new enrollees</b>.
+						<br>
+						<br>
+						<em>(Additional institutional details to be documented during the site visit — <b>In Progress</b>)</em>
+                        <br><span class="italic text-sm text-gray-500"></span>
+                    </p>
+
+                    <!-- 2.2.2 Learning Environment -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">2.2.2 Description of the Learning Environment</h3>
+                    <p class="text-gray-700">
+                        Teaching sessions are scheduled to take place in the <b>Playgroup Classroom</b>.
+                    </p>
+                    <ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-yellow-50 rounded-lg">
+                        <li><b>Physical Condition:</b> The classroom is designed for young learners, with child-sized tables, open floor space, and visual learning materials. Lighting and ventilation appear adequate based on initial information.<br>
+						<i>(Detailed physical inspection — <b>In Progress</b>)</i>
+						</li>
+                        <li><b>Equipment/Tools Available:</b> Existing manipulatives, mats, toys, storybooks, and classroom visuals are typically available in centers following play-based programs.
+						<br>
+						<i>(Exact list of available resources will be confirmed during observation — <b>In Progress</b>)</i>
+						</li>
+                        <li><b>Work Environment/Atmosphere:</b> Little Discoverers promotes a warm and playful learning atmosphere. Children are accustomed to exploratory and hands-on learning activities, aligning well with the project’s instructional design.
+						<i>(Direct observation notes — <b>In Progress</b>)</i>
+						</li>
+                    </ul>
+
+                    <!-- 2.2.3 Current Practice and Curriculum -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">2.2.3 Current Practice and Curriculum</h3>
+                    <p class="text-gray-700">
+                        The institution uses a flexible early childhood curriculum inspired by the <b>K to 12 curriculum</b>, adjusted for playgroup needs. Numeracy is taught <b>once a week</b>, with emphasis on recognizing numbers, basic counting, and simple comparisons.<br>
+						Teachers shared that although children can identify number symbols, deeper concepts — such as quantity matching, cardinality, and simple operations — require more support. This numeracy-focused intervention aims to supplement existing practices by introducing structured, engaging, play-based activities.
+                        <br><span class="italic text-sm text-gray-500">(Further documentation of daily schedule and routine — <b>In Progress</b>)</span>
+                    </p>
+                </div>
+
+
+                <!-- 2.3 The Target Learners/Users -->
+                <div class="mb-6">
+                    <h2 class="text-2xl text-primary-green mb-4 font-extrabold flex items-center border-b pb-2">
+                        <span class="text-3xl mr-2">🧒🏽</span> 2.3 Target Learners/Users Analysis
+                    </h2>
+                    
+                    <!-- 2.3.1 Demographic Profile and Observations -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">2.3.1 Demographic Profile and Observations</h3>
+                    <p class="text-gray-700">
+                        The target learners are 6–8 playgroup students, aged 3.5 to 4.5 years old, who will join the January 2026 cycle. The center shared that most of the children are expected to be new enrollees, although there may also be a few returning learners depending on final enrollment.
+                    </p>
+                    <ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+                        <li><b>Demographic Summary:</b> Learners are likely to come from nearby communities within Guiguinto and the surrounding areas. The class typically includes a balanced number of boys and girls.
+						<i>Specific demographic details will be updated once enrollment is finalized — <b>In Progress</b>)</i>
+						</li>
+                        <li><b>Socio-Economic Context:</b> Most families belong to stable middle-income households, providing support for early education.
+						<i>More precise information will be included after January — <b>In Progress</b>)</i>
+						</li>
+                        <li><b>Class Observations:</b> Based on initial staff statements, children are energetic, curious, and comfortable with hands-on, play-based activities. Engagement levels and prior numeracy exposure may vary among learners.
+						<i>Further class observation updates will be added after the on-site visit — <b>In Progress</b>)</i>
+						</li>
+                    </ul>
+
+                    <!-- 2.3.2 Initial Assessment of Entry Skills -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">2.3.2 Initial Assessment of Entry Skills and Competencies</h3>
+                    <p class="text-gray-700">
+                        Initial information gathered from the partner institution indicates that many of the incoming playgroup learners can already demonstrate <b>basic early numeracy skills</b>, particularly:
+						<ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+							<li><b>Rote counting</b>(reciting number sequences from memory)</li>
+							<li><b>Recognition of number symbols,</b>especially common numerals such as 1–10</li>
+							<li><b>Familiarity with classroom routines</b>and simple instructional tasks</li>
+						<br></ul>
+						However, teachers also shared that learners often struggle with the <b>conceptual side of numeracy</b>, particularly:
+						<ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+							<li><b>Cardinality</b>(understanding that the last number counted represents the total)</li>
+							<li><b>One-to-one correspondence</b>(accurately matching objects to number words)</li>
+							<li><b>Comparing quantities</b>(distinguishing “more” and “less”)</li>
+							<li><b>Early operations</b>like adding one more or taking one away</li>
+							<li><b>Sequencing numbers</b>meaningfully</li>
+							<li><b>Subitizing</b>(quickly recognizing quantities without counting), which is often underdeveloped at this stage</li>
+							<br></ul>
+						These emerging insights helped guide the initial design of the <b>play-based instructional sessions</b>, ensuring that activities would gradually build from recognition to deeper conceptual understanding.
+						<br><br>
+					<h3>Status of Pre-Assessment</h3><br>
+						The actual <b>Pre-Assessment using the finalized Group Numeracy Assessment Tool</b> is scheduled for <b>January 2026</b>, once the learners are officially enrolled and present on-site.
+						<ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+						<li><b>Actual baseline scores and detailed competency data will be added after administration — (<i>In Progress</i>).</b></li>
+						<li>The current information reflects<b>teacher reports and preliminary discussions,</b> which serve as the basis for planning the intervention at this stage.</li>
+						</ul>
+						<br>
+						This structured approach ensures that the instructional design remains flexible and will be fine-tuned once the real pre-test results are gathered.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Introduction to the Special Project -->
+        <div id="introduction" class="content-section">
+            <div class="p-8 bg-white rounded-leaf shadow-organic">
+                <h1 class="text-4xl text-primary-green mb-6 border-b-4 border-accent-yellow pb-2">3. Introduction to the Special Project: Designing the Intervention</h1>
+
+                <!-- 3.1 Personal Project Objectives -->
+                <div class="mb-10 p-6 bg-light-green rounded-leaf border-l-4 border-primary-green">
+                    <h2 class="text-2xl text-green-800 mb-3 font-extrabold flex items-center">
+                        <span class="text-3xl mr-2">⭐</span> 3.1 Personal Project Objectives
+                    </h2>
+                    <p class="text-gray-700 italic font-medium mb-3">
+                        This special project serves as an opportunity to apply instructional design principles to a real educational setting while contributing meaningfully to early childhood numeracy development. My personal objectives for undertaking this project are the following:
+						<ol class="list-decimal ml-6 text-gray-700 space-y-2">
+							<li><b>To apply the ADDIE instructional design framework</b> in a real-world educational context, demonstrating my ability to design, develop, and evaluate instructional materials grounded in learner needs.</li>
+							<li><b>To deepen my skills in needs analysis and assessment,</b> ensuring that each activity, material, and strategy used in the project directly responds to the numeracy gaps identified in the partner institution’s playgroup learners.</li>
+							<li><b>To explore and showcase the effectiveness of play-based learning</b> as a developmentally appropriate approach for strengthening foundational numeracy skills such as number recognition, counting, comparing quantities, and early operations.</li>
+							<li><b>To develop professional experience in collaborating with an educational partner,</b>communicating design decisions, gathering feedback, and refining instructional outputs based on real learners and real classroom constraints.</li>
+						</ol><br>
+						<i>(Additional personal reflections related to professional identity and instructional design growth will be added after implementation — <b>In Progress</b>)</i>
+					</p>
+                </div>
+
+                <!-- 3.2 The Project Plan: Design and Rationale -->
+                <div class="mb-10">
+                    <h2 class="text-2xl text-primary-green mb-4 font-extrabold flex items-center border-b pb-2">
+                        <span class="text-3xl mr-2">🛠️</span> 3.2 The Project Plan: Design and Rationale
+                    </h2>
+
+                    <!-- 3.2.1 Planned Activities and Work Scope -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">3.2.1 Planned Activities and Work Scope</h3>
+                    <p>
+                        Based on the institution’s initial learner profile (Section 2.3), the project focuses on developing and implementing a play-based numeracy intervention scheduled for January 2026.
+						<br><br>The current work scope includes:
+
+                    </p>
+                    <ul class="list-decimal ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-yellow-50 rounded-lg">
+                        <li><b>Designing a set of structured numeracy sessions</b> targeting number recognition, counting, comparing quantities, sequencing, and simple operations.</li>
+						<li><b>Creating instructional materials</b> aligned with early childhood developmental needs and the partner institution’s curriculum.</li>
+						<li><b>Administering a Pre-Assessment</b> to determine baseline early numeracy skills.</li>
+						<li><b>Implementing 2–4 weekly sessions</b> (final number of sessions to be confirmed by the institution).</li>
+						<li><b>Administering a Post-Assessment </b>to measure learning gains.</li>
+						<li><b>Documenting reflections and observations</b> throughout the implementation process.</li>
+                    </ul>
+					<br>
+					<i>Detailed lesson plans, activity sequences, and materials will be finalized after December — <b>In Progress</b>)</i>
+
+                    <!-- 3.2.2 Approaches, Strategies, and Methodologies -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">3.2.2 Foundational Approach, Methodology, and Strategies</h3><br>
+					
+						<p class="text-gray-700">
+							The instructional framework is based on an <b>Integrated Constructivist Approach</b>, which synthesizes the strengths of Piaget's focus on individual discovery and Vygotsky's focus on social guidance.
+						</p>
+                    <br><h3><em>
+					A. Foundational Theory and Approach
+					</em></h3><br>
+						<p>The approach is Integrated Constructivism, drawing on two primary theories:</p>
+					<table>
+					  <thead>
+						<tr>
+						  <th>Theory</th>
+						  <th>Applied Core Concept</th>
+						</tr>
+					  </thead>
+					  <tbody>
+						<tr>
+						  <td><b>Piaget's Constructivism</b></td>
+						  <td>Children actively construct knowledge through self-exploration and direct interaction, testing and adjusting their mental schema.</td>
+						</tr>
+						<tr>
+						  <td><b>Vygotsky's Social Constructivism</b></td>
+						  <td>Learning is accelerated through social interaction and guided participation within the Zone of Proximal Development (ZPD).</td>
+						</tr>
+					  </tbody>
+					</table>
+					<br><h3><em>
+					B. Learning Methodology (Context)
+					</em></h3><br>
+						<p>The theoretical approach is delivered via a <b>Play-Based Learning methodology</b>.</p>
+						<ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+						<li><b>Context:</b> Play serves as the <b>primary context</b> for learning. Through manipulatives (e.g., counters, mats, number cards), children are given the freedom to explore and manipulate concepts.</li>
+						<li><b>Function:</b> Play provides the concrete, hands-on environment necessary for children to <b>actively construct meaning</b> and engage in shared tasks, translating abstract numeracy into concrete experience.</li>
+						</ul>
+					<br>
+					<br><h3><em>
+					C. Instructional Strategies (Techniques)
+					</em></h3><br>
+						<p>The teacher’s actions are guided by the overall strategy of <b>Socially Guided Exploration</b>, which serves to facilitate both individual and social learning:</p>
+						<ul class="list-decimal ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+						<li><b>Socially Guided Exploration (Overall Strategy):</b> The teacher structures a rich environment and provides intervention only when necessary, balancing individual exploration with intentional guidance.</li>
+						<li><b>Scaffolding (Tactical Strategy):</b> The teacher uses intentional, responsive support (modelling, prompting questions, cues) to assist the learner in their ZPD.</li>
+						<li><b>Exploratory Play & Social Interaction (Tactical Strategy):</b>The design allocates time for both:</li>
+							<ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+							  <li><b>Individual Exploration:</b> Children work independently to test hypotheses (Piaget).</li>
+							  <li><b>Group Interaction: Pair work and guided discussions</b> are used to compare solutions, articulate strategies, and co-construct understanding (Vygotsky).</li>
+							</ul>
+						</ul>
+						<br>
+                </div>
+
+                <!-- 3.3 Theoretical Underpinning and Alignment -->
+                <div class="mb-6">
+                    <h2 class="text-2xl text-primary-green mb-4 font-extrabold flex items-center border-b pb-2">
+                        <span class="text-3xl mr-2">🧠</span> 3.3 Theoretical Underpinning and Alignment
+                    </h2>
+                    
+                    <p class="text-gray-700 italic mb-3">
+                        The design and implementation choices were firmly grounded in established learning theories, maintaining fidelity to the Constructivist philosophy outlined in the Home section.
+                    </p>
+
+                    <!-- Theory 1: Rationale for Instructional Design Choices -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">3.3.1 Rationale for Instructional Design Choices</h3>
+					<h4><b>A. Pedagogical Rationale</b></h4><br>
+                    <p class="text-gray-700 text-base">
+                        The selection of the Integrated Constructivist Approach and Play-Based Learning is paramount because:
+						<ul class="list-decimal ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+						<li><b>Holistic Development:</b> This integrated framework addresses both the <b>individual cognitive drive</b> (Piaget) and the <b>social-emotional necessity</b> of learning (Vygotsky). It ensures learning is both personally meaningful and socially enriched.</li>
+						<li><b>Effective Skill Transfer:</b> The combination ensures the intervention is both <b>intrinsically motivating</b> (Play-Based) and <b>effective</b> (targeted support via Scaffolding in the ZPD ), leading to deeper, more durable learning gains in numeracy.</li><br>
+						</ul>
+                    </p>
+					<h4><b>B. Implementation Rationale</b></h4><br>
+                    <p class="text-gray-700 text-Base">
+                        The <b>ADDIE Model</b> was selected to manage the complexity and accountability of the short-term intervention
+						<ul class="list-decimal ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+						<li><b>Systematic Quality Control:</b> ADDIE mandates a structured process where the initial <b>Analysis</b> phase directly informs the <b>Design and Development</b>, guaranteeing that the activities are aligned with the learners' specific baseline needs.</li>
+						<li><b>Accountability and Evaluation:</b> The model requires a formal <b>Evaluation</b> phase. The planning for both pre- and post-assessments ensures that learning gains are systematically tracked, providing empirical evidence of the intervention’s impact.</li>
+						</ul>
+                    </p>
+
+                    <!-- Theory 2: Instructional Design Model (ADDIE MODEL) -->
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">3.3.2 Instructional Design Model (ADDIE MODEL)</h3><br>
+                    <p class="text-gray-700 text-Base">
+                        The <b>ADDIE Model</b> was chosen as the framework for designing, implementing, and evaluating the learning sessions. It consists of five phases: <b>Analysis, Design, Development, Implementation, and Evaluation.</b><br>
+						<ul class="list-decimal ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+						<li><b>Analysis: </b>This phase involved identifying the learners’ needs and readiness for the lessons. Insights were gathered through an <b>informal needs assessment</b> conducted by Ma’am Flordeliza, highlighting the children’s current skills, learning preferences, and areas for support in number recognition and sequencing (1–10). A <b>formal pre-assessment</b> will be conducted prior to the first session to establish baseline data, which will guide the planning of lessons and activities.</li>
+						<li><b>Design: </b>Learning objectives, outcomes, and instructional strategies will be developed based on the analysis. Activities will be structured to be playful, interactive, and developmentally appropriate for children aged 3.5 to 4.5 years.</li>
+						<li><b>Development: </b>Preparation of learning materials, visual aids, worksheets, and lesson plans is <b>currently in progress</b>. The <b>10-point numeracy checklist</b> has been finalised and will be used to measure children’s progress.</li>
+						<li><b>Implementation: </b>Lessons are planned to be delivered <b>once a week in group sessions every Wednesday</b>. Activities will follow the prepared plans while allowing flexibility to accommodate the pace and needs of the group.</li>
+						<li><b>Evaluation: </b>Evaluation will be conducted using the <b>pre- and post-assessment only</b>. The pre-assessment will establish the children’s baseline skills, and the post-assessment will measure learning progress after the sessions.</li>
+						</ul>
+						<br>
+						By integrating the <b>informal needs assessment</b> and planning for a formal pre-assessment, the ADDIE approach ensures <b>a structured and learner-centered</b> design for the upcoming group-based learning sessions.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Narrative Section (UPDATED WITH DETAILED PLACEHOLDERS) -->
+        <div id="narrative" class="content-section">
+            <div class="p-8 bg-white rounded-leaf shadow-organic">
+                <h1 class="text-4xl text-primary-green mb-6 border-b-4 border-accent-yellow pb-2">4. Main Narrative & Synthesis: Observing the Game in Action</h1>
+
+                <p class="text-gray-700 mb-8">This section synthesizes the project's journey, detailing key events, methodological choices, challenges encountered, and final outcomes. It serves as the analytical narrative supported by specific project logs and eJournal entries.</p>
+
+                <!-- 4.1 Project Design and Development Process -->
+                <div class="mb-10 p-6 bg-light-green rounded-leaf border-l-4 border-primary-green">
+                    <h2 class="text-2xl text-green-800 mb-3 font-extrabold flex items-center">
+                        <span class="text-3xl mr-2">🎨</span> 4.1 Project Design and Development Process
+                    </h2>
+                    <p class="text-gray-700 mb-3">
+                        The project follows the <b>ADDIE instructional design model</b>. At this stage, focus has been on <b>analysis and design</b>, guided by the informal needs assessment from Ma’am Flordeliza. The pre- and post-assessment tools have been finalized to measure children’s skills in early numeracy.
+                    </p>
+                    <ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-white rounded-lg border">
+                        <li><b>Design Framework:</b> ADDIE was used to structure the project, ensuring a systematic approach from analysis through evaluation.</li>
+                        <li><b>Materials Development:</b> Preparation of learning materials, visual aids, and worksheets is <b>currently in progress</b>.</li>
+						<li><b>Changes to Existing Materials:</b> Any adaptations or modifications to potential existing resources from the partner institution will be documented as they are implemented.</li>
+                    </ul>
+                </div>
+
+                <!-- 4.2 Implementation: Actual Flow and Departures -->
+                <div class="mb-10">
+                    <h2 class="text-2xl text-primary-green mb-4 font-extrabold flex items-center border-b pb-2">
+                        <span class="text-3xl mr-2">⚙️</span> 4.2 Implementation: Actual Flow and Departures
+                    </h2>
+
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">Session Highlights</h3>
+                    <p class="text-gray-700 italic">
+                        <b>Planned Sessions:</b> Lessons are scheduled <b>once a week on Wednesdays</b> for group sessions. Activities will involve hands-on, playful approaches to numeracy concepts.
+                    </p>
+
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">Departures from the Project Plan</h3>
+                    <p class="text-gray-700">
+                        <b>Departures from Project Plan:</b> As the project has not yet begun implementation, there are no departures to report. Planned adjustments will be documented in project logs as they occur.
+                    </p>
+                </div>
+
+                <!-- 4.3 Challenges, Obstacles, and Resolutions -->
+                <div class="mb-10 p-6 bg-light-green rounded-leaf border-l-4 border-primary-green">
+                    <h2 class="text-2xl text-green-800 mb-3 font-extrabold flex items-center">
+                        <span class="text-3xl mr-2">🛑</span> 4.3 Challenges, Obstacles, and Resolutions
+                    </h2>
+                    <table class="reflection-table text-sm">
+                        <thead>
+                            <tr>
+                                <th>Challenge/Obstacle Encountered</th>
+                                <th>Impact on Project/Learners</th>
+                                <th>Resolution/Action Taken</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Material preparation is still ongoing</td>
+                                <td>Could delay lesson implementation</td>
+                                <td>Currently prioritizing completion of assessment tools; materials to be developed iteratively before sessions</td>
+                            </tr>
+                            <tr>
+                                <td>Scheduling confirmation with learners</td>
+                                <td>Potential rescheduling of sessions</td>
+                                <td>Coordination with the partner institution to confirm group session timings</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 4.4 Significant Insights and Learning -->
+                <div class="mb-10">
+                    <h2 class="text-2xl text-primary-green mb-4 font-extrabold flex items-center border-b pb-2">
+                        <span class="text-3xl mr-2">💡</span> 4.4 Significant Insights and Learning
+                    </h2>
+                    <p class="text-gray-700">
+                        At this stage, insights are preliminary:
+                    </p>
+					<ul class="list-disc ml-6 text-gray-700 text-sm mt-2 space-y-1 p-2 bg-light-green rounded-lg">
+					<li>Recognized the importance of establishing <b>baseline data</b> through the pre-assessment to guide lesson planning.</li>
+					<li>Identified that materials must be<b> simple, engaging, and developmentally appropriate, </b>given the age range of 3.5–4.5 years.</li>
+					</ul><br>
+					Further insights from actual sessions will be documented in the eJournal and reflected in future updates.
+                </div>
+
+                <!-- 4.5 Project Results and Performance Data (Retaining existing structure) -->
+                <div class="mb-10">
+                    <h2 class="text-2xl text-primary-green mb-4 font-extrabold flex items-center border-b pb-2">
+                        <span class="text-3xl mr-2">📈</span> 4.5 Project Results and Performance Data
+                    </h2>
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">Baseline and Post-Project Performance Data</h3>
+                    <p class="text-gray-700">As lessons have not yet been conducted, <b>no baseline or post-project performance data</b> is currently available. The <b>10-point numeracy checklist</b> will be used to track progress once the intervention begins.</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Skill Measured</th>
+                                <th class="text-center">Initial Mastery (\%)</th>
+                                <th class="text-center">Final Mastery (\%)</th>
+                                <th class="text-center">Growth Index</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+								<td>[To be assessed]</td>
+								<td class="text-center">[Pending]</td>
+								<td class="text-center">[Pending]</td>
+								<td class="text-center text-primary-green">[Pending]</td>
+							</tr>
+                            <tr>
+								<td>[To be assessed]</td>
+								<td class="text-center">[Pending]</td>
+								<td class="text-center">[Pending]</td>
+								<td class="text-center text-primary-green">[Pending]</td>
+							</tr>
+                            <tr>
+								<td>[To be assessed]</td>
+								<td class="text-center">[Pending]</td>
+								<td class="text-center">[Pending]</td>
+								<td class="text-center text-primary-green">[Pending]</td>
+							</tr>
+                            <tr class="font-extrabold bg-light-green">
+								<td>Overall Project Performance</td>
+								<td class="text-center">[Pending]</td>
+								<td class="text-center">[Pending]</td>
+								<td class="text-center text-primary-green">[Pending]</td>
+							</tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <hr class="my-8 border-t-4 border-dashed border-primary-green/50">
+
+                <!-- 4.6 Self-Evaluation and Reflection -->
+                <div class="mb-6">
+                    <h1 class="text-3xl text-primary-green mb-4 font-extrabold flex items-center border-b pb-2">
+                        <span class="text-3xl mr-2">🔎</span> 4.6 Self-Evaluation and Reflection
+                    </h1>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">A. Performance, Assumptions, and Beliefs</h3>
+					<p>
+						At this stage, self-evaluation and reflection are <b>ongoing</b>. Insights and assessments will be documented once the lessons are implemented and data from the pre- and post-assessments are available.
+					</p>
+                    <table class="reflection-table text-sm">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Initial Assumption/Belief</th>
+                                <th>Reflection and Change</th>
+                                <th>Basis for Future Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Performance/Outputs</b></td>
+                                <td>Self-evaluation is impending</td>
+                                <td>Self-evaluation will be completed after lessons and assessments are conducted</td>
+                                <td>To be determined after project implementation</td>
+                            </tr>
+                            <tr>
+                                <td><b>Strengths</b></td>
+                                <td>Self-evaluation is impending</td>
+                                <td>Self-evaluation will be completed after lessons and assessments are conducted</td>
+                                <td>To be determined after project implementation</td>
+                            </tr>
+                            <tr>
+                                <td><b>Weaknesses</b></td>
+                                <td>Self-evaluation is impending</td>
+                                <td>Self-evaluation will be completed after lessons and assessments are conducted</td>
+                                <td>To be determined after project implementation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">B. Theoretical Application and Decision-Making</h3>
+					
+                    <ul class="list-disc ml-6 text-gray-700 space-y-2 text-sm p-4 bg-yellow-50 rounded-lg">
+                        <li>Application of BES theories (e.g., Constructivism, Play-Based Learning) is <b>planned</b>; the effectiveness of theory application will be assessed during and after sessions.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">C. Factors, Difficulties, and Remediation</h3>
+					
+                    <p class="text-gray-700 text-sm">
+						<ul class="list-disc ml-6 text-gray-700 space-y-2 text-sm p-4 bg-yellow-50 rounded-lg">
+						<li>
+                        External and internal factors affecting implementation will be documented as they arise.
+						</li>
+						</ul>
+                    </p>
+
+                    <h3 class="text-xl font-bold text-gray-800 mt-6 mb-3 border-l-4 border-accent-yellow pl-3">D. Professional Growth and Program State</h3>
+                    <p class="text-gray-700 text-sm">
+						<ul class="list-disc ml-6 text-gray-700 space-y-2 text-sm p-4 bg-yellow-50 rounded-lg">
+                        <li>Reflections on professional growth and the state of the host institution’s program will be updated post-implementation.</li>
+						</ul>
+                    </p>
+					<br>
+					<em>Note: This section will be completed once lessons are delivered, observations are made, and performance data is collected.</em>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Conclusions Section (Content Unchanged) -->
+        <div id="conclusions" class="content-section">
+            <div class="p-8 bg-white rounded-leaf shadow-organic">
+                <h1 class="text-4xl text-primary-green mb-6 border-b-4 border-accent-yellow pb-2">5. Conclusions & Recommendations: Winning Insights & Next Levels</h1>
+
+                <h2 class="text-2xl text-green-800 mb-4 font-extrabold flex items-center">
+                    <span class="text-3xl mr-2">🏆</span> Conclusions
+                </h2>
+                <p class="text-gray-700">To be completed after lesson implementation and assessment. Reflections on early numeracy development, learner engagement, and the effectiveness of structured play will be documented once data are available.</p>
+
+                <h2 class="text-2xl text-green-800 mb-4 font-extrabold flex items-center mt-8">
+                    <span class="text-3xl mr-2">📝</span> Recommendations
+                </h2>
+                <ul class="list-none ml-0 text-gray-700 space-y-4 mt-4">
+                    <li class="flex items-start">
+                        <span class="text-4xl mr-3 text-accent-yellow">★</span> 
+                        <div>
+                            <p class="font-bold text-gray-800">Recommendation 1</p>
+                            <p class="text-gray-600 text-sm">To be finalized post-implementation, based on observed outcomes and assessment results.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 6. References Section (Content Unchanged) -->
+        <div id="references" class="content-section">
+            <div class="p-8 bg-white rounded-leaf shadow-organic">
+                <h1 class="text-4xl text-primary-green mb-6 border-b-4 border-accent-yellow pb-2">6. References: Supporting Resources</h1>
+                <p class="text-gray-600 italic mb-6 font-inter">All sources will be formatted in <b>APA 7th Edition.</b></p>
+                
+                <p class="text-gray-700 mb-3 text-sm border-l-2 pl-4 border-primary-green">Note: This section is to be filled in / impending. References for all course readings, instructional design resources, curriculum guides, and other supporting materials will be added once the project is finalized.</p>
+            </div>
+        </div>
+
+        <!-- 7. Annexes Section (Content Unchanged) -->
+        <div id="annexes" class="content-section">
+            <div class="p-8 bg-white rounded-leaf shadow-organic">
+                <h1 class="text-4xl text-primary-green mb-6 border-b-4 border-accent-yellow pb-2">7. Appendices/Annexes: Our Documentation</h1>
+
+                <p class="text-gray-700 mb-6">Essential documentation and tools used throughout the special project.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-light-green rounded-xl text-green-900 font-semibold border-l-4 border-primary-green flex items-center font-inter">
+                        <span class="text-2xl mr-2">📋</span> Annex A: Pre/Post-Test Instruments (The Challenge Sheets)
+                    </div>
+                    <div class="p-4 bg-light-green rounded-xl text-green-900 font-semibold border-l-4 border-primary-green flex items-center font-inter">
+                        <span class="text-2xl mr-2">🖼️</span> Annex B: Visual Documentation of Play Sessions
+                    </div>
+                    <div class="p-4 bg-light-green rounded-xl text-green-900 font-semibold border-l-4 border-primary-green flex items-center font-inter">
+                        <span class="text-2xl mr-2">📊</span> Annex C: Full Raw Data Sheets
+                    </div>
+                    <div class="p-4 bg-light-green rounded-xl text-green-900 font-semibold border-l-4 border-primary-green flex items-center font-inter">
+                        <span class="text-2xl mr-2">📜</span> Annex D: Parental Consent Forms
+                    </div>
+                </div>
+				
+					<br><p class="text-gray-700 mb-3 text-sm border-l-2 pl-4 border-primary-green">Note: This section is to be filled in once lessons are conducted, materials are developed, and data are collected. No files are currently uploaded.</p>
+					
+            </div>
+        </div>
+
+        <!-- 8. Journal Section (Content Unchanged) -->
+        <div id="journal" class="content-section">
+            <div class="p-8 bg-white rounded-leaf shadow-organic">
+                <h1 class="text-4xl text-primary-green mb-6 border-b-4 border-accent-yellow pb-2">8. Journal Logs: Day-to-Day Reflections</h1>
+
+                <h2 class="text-2xl text-green-800 mb-4 font-extrabold flex items-center">
+                    <span class="text-3xl mr-2">💭</span> Reflective Notes
+                </h2>
+                <p class="text-gray-700 mb-6">This section provides unfiltered, chronological reflections on the process, challenges, and 'Aha!' moments during the intervention period.</p>
+                
+                <!-- Log Entry 1 -->
+                <div class="data-card shadow-organic mb-6 border-l-4 border-primary-green">
+                    <p class="text-sm font-bold text-primary-green border-b pb-1 mb-2 font-inter">Log Entry #-: Log Title (Day #)</p>
+                    <p class="text-gray-700 text-sm italic">Note: This section is to be filled in once lessons are conducted, materials are used, and observations are made. No journal entries are currently available.</p>
+                </div>
+
+                <!-- Log Entry 2 -->
+                <div class="data-card shadow-organic mb-6 border-l-4 border-primary-green">
+                    <p class="text-sm font-bold text-primary-green border-b pb-1 mb-2 font-inter">Log Entry #-: Log Title (Week #, Day #)</p>
+                    <p class="text-gray-700 text-sm italic">Note: This section is to be filled in once lessons are conducted, materials are used, and observations are made. No journal entries are currently available.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-[var(--color-header-dark-green)] text-white py-6 text-center mt-16 rounded-t-3xl shadow-2xl"> 
+        <p class="text-sm font-medium font-inter">EDS 199 Special Project | The Discovery Playground | Carl Benedict DR. Nemil</p>
+    </footer>
+
+    <script>
+        // JavaScript to handle the single-page application (SPA) navigation and transitions
+        const sections = ['home', 'background', 'introduction', 'narrative', 'conclusions', 'references', 'annexes', 'journal'];
+        const navDrawer = document.getElementById('nav-drawer');
+        const menuButton = document.getElementById('menu-button');
+        const menuBackdrop = document.getElementById('menu-backdrop'); 
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            navDrawer.classList.toggle('is-open', isMenuOpen);
+
+            menuBackdrop.classList.toggle('opacity-50', isMenuOpen);
+            menuBackdrop.classList.toggle('pointer-events-auto', isMenuOpen);
+            
+            document.body.classList.toggle('no-scroll', isMenuOpen);
+            
+            // Toggle icon on menu button
+            if (isMenuOpen) {
+                menuButton.classList.remove('bg-white');
+                menuButton.classList.add('bg-primary-green'); // Active state
+                menuButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>`;
+            } else {
+                menuButton.classList.remove('bg-primary-green');
+                menuButton.classList.add('bg-white'); // Default state
+                menuButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[var(--color-header-dark-green)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                                        </svg>`;
+            }
+        }
+
+        function showPage(pageId) {
+            sections.forEach(id => {
+                const sectionElement = document.getElementById(id);
+                const linkElement = document.getElementById(`link-${id}`);
+
+                if (sectionElement) {
+                    sectionElement.classList.remove('content-active');
+                    sectionElement.style.display = 'none'; 
+                }
+                if (linkElement) {
+                    linkElement.classList.remove('active');
+                }
+            });
+
+            const activeSection = document.getElementById(pageId);
+            if (activeSection) {
+                activeSection.style.display = 'block';
+                setTimeout(() => {
+                    activeSection.classList.add('content-active');
+                }, 10);
+            }
+
+            const activeLink = document.getElementById(`link-${pageId}`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            if (isMenuOpen) {
+                toggleMenu(); // Close menu after selection
+            }
+
+            setTimeout(() => {
+                const mainContent = document.querySelector('main');
+                if (mainContent && window.scrollY > 0) {
+                     mainContent.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 700);
+        }
+
+        function handleHashChange() {
+            let hash = window.location.hash.substring(1);
+            if (!hash || !sections.includes(hash)) {
+                hash = 'home'; // Default to home page
+                window.history.replaceState(null, null, '#home'); 
+            }
+            showPage(hash);
+        }
+
+        menuButton.addEventListener('click', toggleMenu);
+        menuBackdrop.addEventListener('click', toggleMenu); // Closes menu when clicking outside
+
+        document.querySelectorAll('#nav-drawer a').forEach(link => {
+            link.addEventListener('click', (event) => {
+                if (isMenuOpen) {
+                    // Slight delay before hash change to allow for menu animation to start
+                    setTimeout(toggleMenu, 10); 
+                }
+            });
+        });
+
+        window.addEventListener('hashchange', handleHashChange);
+        window.onload = handleHashChange;
+    </script>
+</body>
+</html>
